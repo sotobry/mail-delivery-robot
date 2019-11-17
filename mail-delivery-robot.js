@@ -34,4 +34,40 @@ function buildGraph(edges) {
 }
 
 const roadGraph = buildGraph(roads);
-console.log(roadGraph);
+
+/* Our robot will be moving around the village. There are parcels in various places, each addressed to some other place. The robot picks up parcels when it comes to them and delivers them when it arrives at their destination. The automaton must decide, at each point, where to go next. It has finished its task when all parcels have been delivered.*/
+
+class VillageState {
+  constructor(place, parcels) {
+    this.place = place;
+    this.parcels = parcels;
+  }
+
+  move(destination) {
+    if (!roadGraph[this.place].includes(destination)) return this;
+    else {
+      let parcels = this.parcels.map(p => {
+        if (p.place != this.place) return p;
+        return { place: destination, address: p.address };
+      }).filter(p => p.place != p.address);
+      return new VillageState(destination, parcels);
+    }
+  }
+}
+
+let place = "Post Office";
+let parcels = [{ place: "Post Office", address: "Alice's House" }];
+
+let first = new VillageState(place, parcels);
+let next = first.move("Alice's House");
+
+console.log(next.place);
+console.log(next.parcels);
+console.log(first.place);
+console.log(first.parcels);
+
+
+
+
+
+
